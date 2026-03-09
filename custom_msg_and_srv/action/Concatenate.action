@@ -1,0 +1,9 @@
+# GOAL — ce que le client envoie
+string first_string
+string second_string
+---
+# RESULT — résultat final quand la tâche est terminée
+string concatenated_string
+---
+# FEEDBACK — mises à jour pendant l'exécution
+string current_status

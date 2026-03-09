@@ -1,0 +1,19 @@
+<library path="vehicle_plugins">
+  <class name="vehicle_plugins::Motorbike"
+         type="vehicle_plugins::Motorbike"
+         base_class_type="vehicle_base::VehicleBase">
+    <description>A motorbike plugin</description>
+  </class>
+
+  <class name="vehicle_plugins::Bicycle"
+         type="vehicle_plugins::Bicycle"
+         base_class_type="vehicle_base::VehicleBase">
+    <description>A bicycle plugin</description>
+  </class>
+
+  <class name="vehicle_plugins::Truck"
+         type="vehicle_plugins::Truck"
+         base_class_type="vehicle_base::VehicleBase">
+    <description>A truck plugin</description>
+  </class>
+</library>
