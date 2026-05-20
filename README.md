@@ -371,7 +371,7 @@ ros2 interface show pkg/action/Type
 
 ## 👤 Author / Auteur
 
-**Yehia El Kh**
+**Yehia Elkh*
 - GitHub: [@yehiaelkh](https://github.com/YehiaElkh)
 - LinkedIn: [yehiaelkh](https://www.linkedin.com/in/yahya-elkhoulati-535580331/)
 
