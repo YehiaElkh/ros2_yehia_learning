@@ -1,15 +1,13 @@
 # 🤖 ros2_yehia_learning
+
+> **A complete collection of ROS 2 Humble examples in C++ and Python — built from scratch**
 [![ROS2](https://img.shields.io/badge/ROS2-Humble-22314E?logo=ros)](https://docs.ros.org/en/humble)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/YehiaElkh/ros2_yehia_learning)](https://github.com/YehiaElkh/ros2_yehia_learning/stargazers)
-> **A complete collection of ROS 2 Humble examples in C++ and Python — built from scratch**
-
-[![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)](https://docs.ros.org/en/humble/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%20Jammy-orange)](https://ubuntu.com/)
 [![C++](https://img.shields.io/badge/C++-17-brightgreen)](https://isocpp.org/)
 [![Python](https://img.shields.io/badge/Python-3.10-yellow)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey)](LICENSE)
-
+[![GitHub release](https://img.shields.io/github/v/release/YehiaElkh/ros2_yehia_learning)](https://github.com/YehiaElkh/ros2_yehia_learning/releases)
+[![GitHub stars](https://img.shields.io/github/stars/YehiaElkh/ros2_yehia_learning)](https://github.com/YehiaElkh/ros2_yehia_learning/stargazers)
 ---
 
 ## 📖 Description
