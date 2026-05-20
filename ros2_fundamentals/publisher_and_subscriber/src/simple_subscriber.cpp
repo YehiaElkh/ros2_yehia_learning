@@ -13,7 +13,7 @@ public:
         //                                        |
         //                           même type que le publisher !
             "chatter",   // même nom de topic que le publisher !
-            10,          // QoS : taille de la file d'attente
+            10,          // QoS ?: taille de la file d'attente c'est comme le fifo de SE
             std::bind(&SimpleSubscriber::messageCallback, this, std::placeholders::_1)
             //                                                    |
             //                               _1 = placeholder pour le message reçu

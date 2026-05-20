@@ -27,7 +27,7 @@ public:
         
         // CRÉER LE TIMER
         timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(500),           // période : toutes les 500ms
+            std::chrono::milliseconds(5000),           // période : toutes les 500ms
             std::bind(&SimplePublisher::timerCallback, this)
             // std::bind : "quand le timer sonne, appelle timerCallback de CETTE instance"
         );

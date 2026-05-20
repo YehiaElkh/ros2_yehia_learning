@@ -1,0 +1,428 @@
+<?xml version="1.0"?>
+<!-- XACRO = XML Macros — extension de URDF qui ajoute :
+     - des variables (xacro:property)
+     - des macros réutilisables (xacro:macro)
+     - des expressions mathématiques ${...}
+     Sera converti en URDF pur par la commande : xacro robot.urdf.xacro -->
+<robot name="amr_y" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- ============================================================ -->
+  <!-- PROPRIÉTÉS — constantes réutilisables dans tout le fichier   -->
+  <!-- ============================================================ -->
+  <!-- xacro:property = variable réutilisable partout dans le fichier -->
+  <!-- Avantage : changer une valeur ici = change partout            -->
+  <!-- Syntaxe : ${nom_variable} pour utiliser la valeur             -->
+
+  <xacro:property name="chassis_length" value="0.30"/>
+  <xacro:property name="chassis_width"  value="0.25"/>
+  <xacro:property name="chassis_height" value="0.10"/>
+  <xacro:property name="chassis_mass"   value="1.5"/>
+
+  <xacro:property name="wheel_radius"   value="0.05"/>
+  <xacro:property name="wheel_width"    value="0.04"/>
+  <xacro:property name="wheel_mass"     value="0.1"/>
+  <xacro:property name="wheel_offset_x" value="0.05"/>
+  <xacro:property name="wheel_offset_y" value="0.145"/>
+  <xacro:property name="wheel_offset_z" value="0.0"/>
+
+  <xacro:property name="caster_radius"  value="0.025"/>
+  <xacro:property name="lidar_radius"   value="0.04"/>
+  <xacro:property name="lidar_height"   value="0.04"/>
+
+  <!-- ============================================================ -->
+  <!-- MATÉRIAUX — couleurs pour la visualisation dans RViz         -->
+  <!-- rgba = Red Green Blue Alpha — valeurs de 0 à 1               -->
+  <!-- ============================================================ -->
+
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <!-- ============================================================ -->
+  <!-- BASE FOOTPRINT — lien virtuel au niveau du sol               -->
+  <!-- Convention ROS2 : tous les robots doivent avoir ce lien      -->
+  <!-- Il représente la projection du robot sur le sol              -->
+  <!-- Il n'a pas de géométrie physique                             -->
+  <!-- ============================================================ -->
+
+  <link name="base_footprint"/>
+
+  <!-- joint type="fixed" : les deux liens ne bougent pas l'un par rapport à l'autre -->
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <!-- On lève le robot de la hauteur du rayon des roues -->
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================================================ -->
+  <!-- BASE LINK — corps principal du robot                         -->
+  <!-- Un link contient 3 éléments :                               -->
+  <!--   1. visual    : ce qu'on voit dans RViz                    -->
+  <!--   2. collision : forme pour la physique Gazebo              -->
+  <!--   3. inertial  : masse et inertie pour la simulation        -->
+  <!-- ============================================================ -->
+
+  <link name="base_link">
+
+    <!-- VISUAL : représentation visuelle dans RViz/Gazebo -->
+    <visual>
+      <!-- On lève de chassis_height/2 pour que le bas soit au niveau du joint -->
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <!-- box : boîte rectangulaire — longueur largeur hauteur -->
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <!-- COLLISION : forme utilisée par Gazebo pour détecter les collisions -->
+    <collision>
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+
+    <!-- INERTIAL : propriétés physiques pour la simulation Gazebo -->
+    <!-- Formules pour une boîte solide homogène                   -->
+    <inertial>
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <mass value="${chassis_mass}"/>
+      <inertia
+        ixx="${chassis_mass/12*(chassis_width*chassis_width + chassis_height*chassis_height)}"
+        ixy="0"
+        ixz="0"
+        iyy="${chassis_mass/12*(chassis_length*chassis_length + chassis_height*chassis_height)}"
+        iyz="0"
+        izz="${chassis_mass/12*(chassis_length*chassis_length + chassis_width*chassis_width)}"/>
+    </inertial>
+  </link>
+
+  <!-- ============================================================ -->
+  <!-- MACRO ROUE — éviter de dupliquer le code pour chaque roue   -->
+  <!-- params : liste des paramètres de la macro                   -->
+  <!-- Utilisation : <xacro:wheel name="wheel_left" x="0.05" y="0.145"/> -->
+  <!-- ============================================================ -->
+
+  <xacro:macro name="wheel" params="name x y">
+
+    <!-- type="continuous" : peut tourner sans limite (360° et plus) -->
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}_link"/>
+      <!-- rpy="-1.5708 0 0" : rotation de -90° autour de X        -->
+      <!-- Le cylindre URDF est vertical par défaut                 -->
+      <!-- On le couche pour qu'il soit horizontal comme une roue   -->
+      <origin xyz="${x} ${y} ${wheel_offset_z}" rpy="-1.5708 0 0"/>
+      <!-- axis : axe de rotation — Z car on a tourné le cylindre   -->
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="${name}_link">
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <!-- cylinder : rayon et longueur -->
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+
+      <!-- Formules pour un cylindre solide                         -->
+      <!-- izz cylindre = m*r²/2 — inertie autour de l'axe principal -->
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${wheel_mass}"/>
+        <inertia
+          ixx="${wheel_mass/12*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)}"
+          ixy="0"
+          ixz="0"
+          iyy="${wheel_mass/12*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)}"
+          iyz="0"
+          izz="${wheel_mass/2*wheel_radius*wheel_radius}"/>
+      </inertial>
+    </link>
+
+  </xacro:macro>
+
+  <!-- Instancier la macro pour créer les deux roues -->
+  <!-- wheel_left  : y positif = côté gauche         -->
+  <!-- wheel_right : y négatif = côté droit          -->
+  <xacro:wheel name="wheel_left"  x="${wheel_offset_x}" y="${wheel_offset_y}"/>
+  <xacro:wheel name="wheel_right" x="${wheel_offset_x}" y="${-wheel_offset_y}"/>
+
+  <!-- ============================================================ -->
+  <!-- ROUE FOLLE (CASTER WHEEL) — stabilise le robot à l'arrière  -->
+  <!-- type="fixed" : rigidement attachée au châssis               -->
+  <!-- Sphère = friction minimale dans Gazebo                      -->
+  <!-- ============================================================ -->
+
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_link"/>
+    <!-- Position : à l'arrière du robot (x négatif)               -->
+    <origin xyz="${-chassis_length/2 + caster_radius} 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_link">
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- sphere : idéale pour roue folle (friction minimale)    -->
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+    </collision>
+
+    <!-- Inertie sphère = 2/5 * m * r² pour chaque axe             -->
+    <inertial>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.0001"
+        ixy="0"
+        ixz="0"
+        iyy="0.0001"
+        iyz="0"
+        izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ============================================================ -->
+  <!-- LIDAR — capteur laser 360°                                   -->
+  <!-- type="fixed" : ne bouge pas par rapport au robot            -->
+  <!-- Positionné sur le dessus du châssis                         -->
+  <!-- Le plugin Gazebo sera ajouté dans amr_gazebo                -->
+  <!-- ============================================================ -->
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <!-- z = hauteur châssis + demi-hauteur LiDAR                  -->
+    <origin xyz="0 0 ${chassis_height + lidar_height/2}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="lidar_link">
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- cylindre rouge pour représenter le LiDAR              -->
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0001"
+        ixy="0"
+        ixz="0"
+        iyy="0.0001"
+        iyz="0"
+        izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ============================================================ -->
+  <!-- GAZEBO MATERIALS — couleurs dans Gazebo                      -->
+  <!-- Gazebo utilise ses propres matériaux différents de RViz      -->
+  <!-- ============================================================ -->
+
+  <gazebo reference="base_link">
+    <!-- Référence au lien auquel appliquer le matériau -->
+    <material>Gazebo/Blue</material>
+    <!-- Gazebo/Blue : matériau bleu dans Gazebo -->
+  </gazebo>
+
+  <gazebo reference="wheel_left_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="wheel_right_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="caster_link">
+    <material>Gazebo/Grey</material>
+    <!-- Roue folle : friction minimale pour ne pas bloquer le robot -->
+    <mu1>0.001</mu1>   <!-- coefficient de friction statique -->
+    <mu2>0.001</mu2>   <!-- coefficient de friction dynamique -->
+  </gazebo>
+
+  <gazebo reference="lidar_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <!-- ============================================================ -->
+  <!-- PLUGIN DIFF_DRIVE — simuler les moteurs des roues            -->
+  <!-- Differential Drive = robot à deux roues motrices            -->
+  <!-- ============================================================ -->
+
+  <gazebo>
+    <!-- gazebo sans reference = plugin global du robot -->
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+    <!-- filename : nom de la bibliothèque du plugin Gazebo         -->
+
+      <!-- Fréquence de mise à jour du plugin en Hz -->
+      <update_rate>30</update_rate>
+
+      <!-- Noms des joints des roues gauche et droite -->
+      <left_joint>wheel_left_joint</left_joint>
+      <right_joint>wheel_right_joint</right_joint>
+
+      <!-- Dimensions du robot -->
+      <wheel_separation>0.29</wheel_separation>
+      <!-- wheel_separation : distance entre les deux roues (2 * wheel_offset_y) -->
+      <wheel_diameter>0.1</wheel_diameter>
+      <!-- wheel_diameter : diamètre des roues (2 * wheel_radius) -->
+
+      <!-- Limites de vitesse -->
+      <max_wheel_torque>20</max_wheel_torque>
+      <!-- max_wheel_torque : couple maximal en N.m -->
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <!-- max_wheel_acceleration : accélération max en rad/s² -->
+
+      <!-- Topics ROS2 -->
+      <command_topic>cmd_vel</command_topic>
+      <!-- command_topic : topic où le plugin lit les commandes de vitesse -->
+
+      <!-- Publier l'odométrie -->
+      <publish_odom>true</publish_odom>
+      <!-- true : publier la position estimée sur /odom -->
+      <publish_odom_tf>true</publish_odom_tf>
+      <!-- true : publier la transformation odom → base_footprint sur /tf -->
+      <publish_wheel_tf>false</publish_wheel_tf>
+      <!-- false : ne pas publier les TF des roues (géré par robot_state_publisher) -->
+
+      <!-- Noms des frames TF -->
+      <odometry_frame>odom</odometry_frame>
+      <!-- Frame de référence de l'odométrie -->
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <!-- Frame de base du robot -->
+
+    </plugin>
+  </gazebo>
+
+  <!-- ============================================================ -->
+  <!-- PLUGIN LIDAR — simuler le capteur laser 360°                 -->
+  <!-- ============================================================ -->
+
+  <gazebo reference="lidar_link">
+  <!-- reference="lidar_link" : attacher le plugin à ce lien       -->
+
+    <sensor name="lidar_sensor" type="ray">
+    <!-- type="ray" : capteur de type rayon laser                  -->
+
+      <!-- Pose du capteur par rapport au lien -->
+      <pose>0 0 0 0 0 0</pose>
+
+      <!-- Activer le capteur -->
+      <always_on>true</always_on>
+
+      <!-- Fréquence de publication en Hz -->
+      <update_rate>10</update_rate>
+
+      <!-- Visualiser les rayons dans Gazebo (debug) -->
+      <visualize>true</visualize>
+
+      <ray>
+        <scan>
+          <horizontal>
+            <!-- Nombre de rayons laser -->
+            <samples>360</samples>
+            <!-- samples : 360 rayons = 1 rayon par degré -->
+
+            <!-- Résolution (1 = pas d'interpolation) -->
+            <resolution>1</resolution>
+
+            <!-- Angle minimum et maximum en radians -->
+            <min_angle>-3.14159</min_angle>
+            <!-- -π = -180° -->
+            <max_angle>3.14159</max_angle>
+            <!-- +π = +180° → scan 360° complet -->
+          </horizontal>
+        </scan>
+
+        <range>
+          <!-- Distance minimale de détection en mètres -->
+          <min>0.12</min>
+          <!-- Distance maximale de détection en mètres -->
+          <max>10.0</max>
+          <!-- Résolution de distance en mètres -->
+          <resolution>0.015</resolution>
+        </range>
+
+        <noise>
+          <!-- Ajouter du bruit pour simuler un vrai capteur -->
+          <type>gaussian</type>
+          <!-- gaussian : bruit gaussien (le plus réaliste) -->
+          <mean>0.0</mean>
+          <!-- mean : moyenne du bruit = 0 (pas de biais) -->
+          <stddev>0.01</stddev>
+          <!-- stddev : écart-type = 1cm de bruit -->
+        </noise>
+      </ray>
+
+      <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+      <!-- libgazebo_ros_ray_sensor.so : plugin ROS2 pour capteur laser -->
+
+        <!-- Topic de publication des données laser -->
+        <ros>
+          <remapping>~/out:=scan</remapping>
+          <!-- Remapper la sortie du plugin vers /scan -->
+        </ros>
+
+        <!-- Type de message publié -->
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <!-- sensor_msgs/LaserScan : message standard ROS2 pour LiDAR -->
+
+        <!-- Nom du frame du capteur -->
+        <frame_name>lidar_link</frame_name>
+        <!-- Doit correspondre au nom du lien dans le URDF -->
+
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

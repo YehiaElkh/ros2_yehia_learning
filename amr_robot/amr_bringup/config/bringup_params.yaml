@@ -1,0 +1,57 @@
+# ============================================================
+# PARAMÈTRES GLOBAUX DU BRINGUP AMR-Y
+# ============================================================
+# Ce fichier centralise tous les paramètres configurables
+# du système AMR-Y en un seul endroit
+
+amr_bringup:
+
+  # --------------------------------------------------------
+  # ROBOT
+  # --------------------------------------------------------
+  robot_name: "amr_y"
+  # Nom du robot dans Gazebo
+
+  # --------------------------------------------------------
+  # POSITION INITIALE DANS GAZEBO
+  # --------------------------------------------------------
+  initial_pose:
+    x: 0.0
+    y: 0.0
+    z: 0.05
+    yaw: 0.0
+
+  # --------------------------------------------------------
+  # GAZEBO
+  # --------------------------------------------------------
+  gazebo:
+    world: "amr_world"
+    # Nom du monde Gazebo (sans extension .world)
+    pause_on_start: false
+    # false : démarrer la simulation immédiatement
+
+  # --------------------------------------------------------
+  # SLAM
+  # --------------------------------------------------------
+  slam:
+    mode: "mapping"
+    # mapping : construire une carte
+    # localization : se localiser sur une carte existante
+    map_save_path: "~/ros2_yehia/src/amr_navigation/maps/amr_map"
+    # Chemin de sauvegarde de la carte
+
+  # --------------------------------------------------------
+  # NAVIGATION
+  # --------------------------------------------------------
+  navigation:
+    map_file: "amr_map.yaml"
+    # Nom du fichier de carte (dans maps/)
+
+  # --------------------------------------------------------
+  # MISSION
+  # --------------------------------------------------------
+  mission:
+    auto_start: true
+    # true : démarrer la mission automatiquement
+    mission_file: "mission.yaml"
+    # Nom du fichier de mission (dans config/)

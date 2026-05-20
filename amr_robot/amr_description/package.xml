@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- Format 3 = version actuelle du format package.xml ROS2 -->
+<package format="3">
+
+  <!-- Nom du package — doit correspondre au project() dans CMakeLists.txt -->
+  <name>amr_description</name>
+
+  <!-- Version sémantique : MAJEUR.MINEUR.PATCH -->
+  <version>0.0.1</version>
+
+  <!-- Description courte du package -->
+  <description>AMR-Y robot description — URDF model</description>
+
+  <!-- Mainteneur — obligatoire pour publier sur ROS index -->
+  <maintainer email="yehiaelkh@email.com">Yehia ElKh</maintainer>
+
+  <!-- Licence du code source -->
+  <license>Apache-2.0</license>
+
+
+  <!-- DÉPENDANCES DE BUILD -->
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <!-- buildtool_depend : outil nécessaire pour compiler le package -->
+  <!-- ament_cmake = système de build ROS2 -->
+
+
+  <!-- DÉPENDANCES RUNTIME  -->
+  <!-- depend = nécessaire pour compiler ET exécuter            -->
+
+  <depend>urdf</depend>
+  <!-- urdf : pour parser et valider les fichiers URDF -->
+
+  <depend>xacro</depend>
+  <!-- xacro : pour convertir les fichiers .xacro en URDF -->
+
+  <depend>robot_state_publisher</depend>
+  <!-- robot_state_publisher : utilisé dans le launch file -->
+
+  <depend>joint_state_publisher_gui</depend>
+  <!-- joint_state_publisher_gui : interface graphique pour les joints -->
+
+  <depend>rviz2</depend>
+  <!-- rviz2 : visualisation 3D -->
+
+  
+  <!-- TYPE DE BUILD  -->
+  <export>
+    <build_type>ament_cmake</build_type>
+    <!-- Indique à colcon quel système de build utiliser -->
+  </export>
+
+</package>

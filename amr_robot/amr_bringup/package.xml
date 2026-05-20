@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>amr_bringup</name>
+  <version>0.0.1</version>
+  <description>AMR-Y complete system bringup</description>
+  <maintainer email="yehiaelkh@email.com">Yehia ElKh</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Dépendances vers tous les packages AMR-Y -->
+  <exec_depend>amr_description</exec_depend>
+  <exec_depend>amr_gazebo</exec_depend>
+  <exec_depend>amr_slam</exec_depend>
+  <exec_depend>amr_navigation</exec_depend>
+  <exec_depend>amr_controller</exec_depend>
+
+  <!-- Dépendances ROS2 -->
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

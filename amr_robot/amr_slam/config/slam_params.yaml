@@ -1,0 +1,156 @@
+# ============================================================
+# PARAMÈTRES SLAM TOOLBOX
+# ============================================================
+# slam_toolbox est le package SLAM officiel de ROS2
+# Il utilise l'algorithme de scan matching pour construire la carte
+# Documentation : https://github.com/SteveMacenski/slam_toolbox
+
+slam_toolbox:
+  ros__parameters:
+
+    # --------------------------------------------------------
+    # SOLVER — algorithme d'optimisation de la carte
+    # --------------------------------------------------------
+    solver_plugin: solver_plugins::CeresSolver
+    # CeresSolver : bibliothèque d'optimisation de Google
+    # Alternative : solver_plugins::G2oSolver
+
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    # Méthode de résolution du système linéaire
+    # SPARSE_NORMAL_CHOLESKY : bonne performance pour cartes larges
+
+    ceres_preconditioner: SCHUR_JACOBI
+    # Préconditionneur pour accélérer la convergence
+
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    # Stratégie d'optimisation — Levenberg-Marquardt est robuste
+
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+    # None : pas de fonction de perte (robuste aux outliers)
+
+    # --------------------------------------------------------
+    # FRAMES TF2 — noms des repères de coordonnées
+    # --------------------------------------------------------
+    odom_frame: odom
+    # Frame de l'odométrie — publié par le plugin diff_drive
+
+    map_frame: map
+    # Frame de la carte générée par SLAM
+
+    base_frame: base_footprint
+    # Frame de base du robot — doit correspondre au URDF
+
+    scan_topic: /scan
+    # Topic où SLAM lit les données LiDAR
+
+    # --------------------------------------------------------
+    # MODE DE FONCTIONNEMENT
+    # --------------------------------------------------------
+    mode: mapping
+    # mapping  : construire une nouvelle carte (notre cas)
+    # localization : se localiser sur une carte existante
+
+    # --------------------------------------------------------
+    # PARAMÈTRES DE SCAN MATCHING
+    # --------------------------------------------------------
+    debug_logging: false
+    # false : pas de logs de debug (moins verbeux)
+
+    throttle_scans: 1
+    # Traiter 1 scan sur N — 1 = traiter tous les scans
+
+    transform_publish_period: 0.02
+    # Période de publication des TF2 en secondes (50 Hz)
+
+    map_update_interval: 5.0
+    # Intervalle de mise à jour de la carte en secondes
+    # 5.0 : mettre à jour la carte toutes les 5 secondes
+
+    resolution: 0.05
+    # Résolution de la carte en mètres par pixel
+    # 0.05 = 5cm par pixel — bon compromis précision/mémoire
+
+    max_laser_range: 10.0
+    # Portée maximale du LiDAR utilisée pour le SLAM
+    # Doit correspondre au max_range du plugin LiDAR
+
+    minimum_time_interval: 0.5
+    # Intervalle minimum entre deux poses enregistrées en secondes
+
+    transform_timeout: 0.2
+    # Timeout pour les lookups TF2 en secondes
+
+    tf_buffer_duration: 30.0
+    # Durée du buffer TF2 en secondes
+
+    stack_size_to_use: 40000000
+    # Taille de la pile mémoire en octets (40 MB)
+
+    # --------------------------------------------------------
+    # SCAN MATCHING — paramètres de correspondance des scans
+    # --------------------------------------------------------
+    enable_interactive_mode: true
+    # true : activer le mode interactif (RViz plugin)
+
+    use_scan_matching: true
+    # true : utiliser le scan matching pour corriger l'odométrie
+
+    use_scan_barycenter: true
+    # true : utiliser le barycentre du scan pour le matching
+
+    minimum_travel_distance: 0.5
+    # Distance minimale à parcourir avant d'ajouter un nœud
+    # 0.5m : ajouter un nœud toutes les 50cm de déplacement
+
+    minimum_travel_heading: 0.5
+    # Angle minimal de rotation avant d'ajouter un nœud
+    # 0.5 rad ≈ 28° de rotation
+
+    scan_buffer_size: 10
+    # Nombre de scans gardés en mémoire pour le matching
+
+    scan_buffer_maximum_scan_distance: 10.0
+    # Distance maximale des scans dans le buffer
+
+    link_match_minimum_response_fine: 0.1
+    # Score minimum pour valider une correspondance fine
+
+    link_scan_maximum_distance: 1.5
+    # Distance maximale pour chercher des correspondances
+
+    loop_search_maximum_distance: 3.0
+    # Distance maximale pour chercher des fermetures de boucle
+    # Loop closure : reconnaître un endroit déjà visité
+
+    do_loop_closing: true
+    # true : activer la fermeture de boucle
+    # Améliore la précision de la carte quand on revient au départ
+
+    loop_match_minimum_chain_size: 10
+    # Nombre minimum de nœuds pour valider une fermeture de boucle
+
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+    # Paramètres de validation de la fermeture de boucle
+
+    # --------------------------------------------------------
+    # CORRÉLATION — recherche de correspondances
+    # --------------------------------------------------------
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+
+    loop_search_space_dimension: 8.0
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349
+    coarse_search_angle_offset: 0.349
+    coarse_angle_resolution: 0.0349
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5
+    use_response_expansion: true

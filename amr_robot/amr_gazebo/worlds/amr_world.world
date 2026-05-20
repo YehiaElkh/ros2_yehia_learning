@@ -1,0 +1,315 @@
+<?xml version="1.0" ?>
+<!-- 
+  Fichier .world = description de l'environnement de simulation Gazebo
+  Format SDF (Simulation Description Format) — différent de URDF
+  URDF = décrit le robot
+  SDF  = décrit le monde (environnement, lumières, objets...)
+-->
+<sdf version="1.6">
+<world name="amr_world">
+<!-- name : nom du monde dans Gazebo -->
+
+  <!-- ============================================================ -->
+  <!-- PHYSIQUE — paramètres du moteur physique                     -->
+  <!-- ============================================================ -->
+  <physics type="ode">
+  <!-- type="ode" : Open Dynamics Engine — moteur physique par défaut -->
+
+    <real_time_update_rate>1000.0</real_time_update_rate>
+    <!-- Nombre de pas de simulation par seconde -->
+    <!-- 1000 Hz = simulation très précise mais CPU intensif -->
+
+    <max_step_size>0.001</max_step_size>
+    <!-- Durée d'un pas de simulation en secondes -->
+    <!-- 0.001s = 1ms par pas -->
+
+    <real_time_factor>1</real_time_factor>
+    <!-- 1 = temps réel, 0.5 = simulation 2x plus lente que réel -->
+
+  </physics>
+
+  <!-- ============================================================ -->
+  <!-- PLUGINS — extensions Gazebo                                  -->
+  <!-- ============================================================ -->
+
+  <plugin name="gazebo_ros_init" filename="libgazebo_ros_init.so"/>
+  <!-- libgazebo_ros_init : initialiser ROS2 dans Gazebo -->
+  <!-- Obligatoire pour que les plugins ROS2 fonctionnent -->
+
+  <plugin name="gazebo_ros_factory" filename="libgazebo_ros_factory.so"/>
+  <!-- libgazebo_ros_factory : permettre de spawner des robots depuis ROS2 -->
+
+  <!-- ============================================================ -->
+  <!-- LUMIÈRES                                                      -->
+  <!-- ============================================================ -->
+
+  <light name="sun" type="directional">
+  <!-- type="directional" : lumière directionnelle (comme le soleil) -->
+  <!-- Autres types : point (ampoule), spot (projecteur) -->
+
+    <cast_shadows>true</cast_shadows>
+    <!-- true : la lumière projette des ombres -->
+
+    <pose>0 0 10 0 0 0</pose>
+    <!-- Position et orientation de la lumière -->
+    <!-- x y z roll pitch yaw -->
+
+    <diffuse>0.8 0.8 0.8 1</diffuse>
+    <!-- Couleur de la lumière diffuse (blanche) -->
+    <!-- rgba : rouge vert bleu alpha -->
+
+    <specular>0.2 0.2 0.2 1</specular>
+    <!-- Couleur de la lumière spéculaire (reflets) -->
+
+    <attenuation>
+      <range>1000</range>       <!-- portée de la lumière en mètres -->
+      <constant>0.9</constant>  <!-- atténuation constante -->
+      <linear>0.01</linear>     <!-- atténuation linéaire -->
+      <quadratic>0.001</quadratic> <!-- atténuation quadratique -->
+    </attenuation>
+
+    <direction>-0.5 0.1 -0.9</direction>
+    <!-- Direction du rayon lumineux (vecteur normalisé) -->
+
+  </light>
+
+  <!-- ============================================================ -->
+  <!-- SOL                                                           -->
+  <!-- ============================================================ -->
+
+  <model name="ground_plane">
+  <!-- model : objet dans le monde Gazebo -->
+
+    <static>true</static>
+    <!-- static=true : l'objet ne bouge pas (économise le CPU) -->
+
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>  <!-- normale vers le haut (axe Z) -->
+            <size>100 100</size>    <!-- taille du sol en mètres -->
+          </plane>
+        </geometry>
+
+        <surface>
+          <friction>
+            <ode>
+              <mu>100</mu>   <!-- friction élevée pour que le robot ne glisse pas -->
+              <mu2>50</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name="visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>100 100</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name>
+            <!-- Gazebo/Grey : texture grise standard -->
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- ============================================================ -->
+  <!-- MURS — créer un environnement fermé                          -->
+  <!-- ============================================================ -->
+
+  <!-- MUR NORD -->
+  <model name="wall_north">
+    <static>true</static>
+    <pose>0 5 0.5 0 0 0</pose>
+    <!-- Position : y=5 (nord), z=0.5 (centre du mur à mi-hauteur) -->
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box><size>10 0.2 1.0</size></box>
+          <!-- Mur : 10m de long, 20cm d'épaisseur, 1m de haut -->
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box><size>10 0.2 1.0</size></box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/White</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- MUR SUD -->
+  <model name="wall_south">
+    <static>true</static>
+    <pose>0 -5 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry><box><size>10 0.2 1.0</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><box><size>10 0.2 1.0</size></box></geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/White</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- MUR EST -->
+  <model name="wall_east">
+    <static>true</static>
+    <pose>5 0 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry><box><size>0.2 10 1.0</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><box><size>0.2 10 1.0</size></box></geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/White</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- MUR OUEST -->
+  <model name="wall_west">
+    <static>true</static>
+    <pose>-5 0 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry><box><size>0.2 10 1.0</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><box><size>0.2 10 1.0</size></box></geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/White</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- ============================================================ -->
+  <!-- OBSTACLES — objets dans l'environnement                      -->
+  <!-- ============================================================ -->
+
+  <!-- OBSTACLE 1 — colonne cylindrique -->
+  <model name="obstacle_1">
+    <static>true</static>
+    <pose>2 2 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.3</radius><length>1.0</length></cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.3</radius><length>1.0</length></cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- OBSTACLE 2 — boîte -->
+  <model name="obstacle_2">
+    <static>true</static>
+    <pose>-2 1 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box><size>0.5 0.5 1.0</size></box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.5 0.5 1.0</size></box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Green</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- OBSTACLE 3 — boîte -->
+  <model name="obstacle_3">
+    <static>true</static>
+    <pose>1 -2 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <box><size>0.8 0.3 1.0</size></box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.8 0.3 1.0</size></box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Blue</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+  <!-- OBSTACLE 4 — colonne cylindrique -->
+  <model name="obstacle_4">
+    <static>true</static>
+    <pose>-3 -2 0.5 0 0 0</pose>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.2</radius><length>1.0</length></cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.2</radius><length>1.0</length></cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+
+</world>
+</sdf>

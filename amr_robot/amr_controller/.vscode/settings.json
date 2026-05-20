@@ -1,0 +1,35 @@
+{
+    "ros.distro": "humble",
+    "python.autoComplete.extraPaths": [
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_plugins_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_base_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/use_library_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/start_with_simple_nodes_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/service_server_and_client_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/publisher_library_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/publisher_and_subscriber_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/parameters_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/message_sync_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/dynamic_tf2_publisher_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/action_tutorial_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/custom_msg_and_srv/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_plugins_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_base_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/use_library_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/start_with_simple_nodes_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/service_server_and_client_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/publisher_library_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/publisher_and_subscriber_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/parameters_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/message_sync_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/dynamic_tf2_publisher_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/action_tutorial_py/lib/python3.10/site-packages",
+        "/home/yehiaelkh/ros2_yehia/install/custom_msg_and_srv/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

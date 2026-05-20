@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_plugins/include/**",
+        "/home/yehiaelkh/ros2_yehia/install/vehicle_base/include/**",
+        "/home/yehiaelkh/ros2_yehia/install/publisher_library/include/**",
+        "/home/yehiaelkh/ros2_yehia/install/custom_msg_and_srv/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/yehiaelkh/ros2_yehia/src/amr_controller/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

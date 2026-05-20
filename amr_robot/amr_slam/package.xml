@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>amr_slam</name>
+  <version>0.0.1</version>
+  <description>AMR-Y SLAM configuration</description>
+  <maintainer email="yehiaelkh@email.com">Yehia ElKh</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>slam_toolbox</depend>
+  <depend>amr_description</depend>
+  <depend>amr_gazebo</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

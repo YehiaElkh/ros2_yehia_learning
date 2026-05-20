@@ -1,0 +1,52 @@
+# ============================================================
+# FICHIER DE CONFIGURATION DE LA MISSION
+# ============================================================
+# Ce fichier définit les waypoints que le robot va visiter
+# On peut modifier la mission sans recompiler le code !
+# ============================================================
+
+mission:
+
+  # Nom de la mission (affiché dans les logs)
+  name: "AMR-Y Patrol Mission"
+
+  # Répéter la mission en boucle
+  loop: false
+  # false : faire la mission une seule fois
+  # true  : répéter indéfiniment
+
+  # Nombre max de tentatives par waypoint avant de passer au suivant
+  max_retries: 2
+
+  # Temps d'attente entre deux waypoints en secondes
+  wait_between_waypoints: 2.0
+
+  # Liste des waypoints
+  # x, y : position en mètres dans le repère map
+  # yaw   : orientation en radians (0=droite, 1.57=haut, 3.14=gauche)
+  # name  : nom du waypoint (pour les logs)
+  waypoints:
+    - name: "Point A"
+      x:  2.0
+      y:  1.0
+      yaw: 0.0
+
+    - name: "Point B"
+      x:  2.0
+      y: -1.0
+      yaw: 1.57
+
+    - name: "Point C"
+      x: -1.0
+      y: -1.0
+      yaw: 3.14
+
+    - name: "Point D"
+      x: -1.0
+      y:  1.0
+      yaw: -1.57
+
+    - name: "Home"
+      x:  0.0
+      y:  0.0
+      yaw: 0.0
