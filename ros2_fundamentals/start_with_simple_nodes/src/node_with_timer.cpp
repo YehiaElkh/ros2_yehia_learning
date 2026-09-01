@@ -1,10 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
 
-class MyNode : public rclcpp::Node
-{
+class MyNode : public rclcpp::Node{
 public:
-    MyNode() : Node("node_with_timer"), count_(0)
-    {
+    MyNode() : Node("node_with_timer"), count_(0){
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(500),
             std::bind(&MyNode::timerCallback, this)
@@ -13,8 +11,7 @@ public:
     }
 
 private:
-    void timerCallback()
-    {
+    void timerCallback(){
         count_++;
         RCLCPP_INFO(this->get_logger(), "Hello n:%d", count_);
     }
@@ -23,8 +20,7 @@ private:
     int count_;
 };
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
     rclcpp::init(argc, argv);
     rclcpp::spin(std::make_shared<MyNode>());
     rclcpp::shutdown();
