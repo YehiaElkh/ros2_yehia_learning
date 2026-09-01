@@ -3,3 +3,7 @@ install/
 log/
 __pycache__/
 *.pyc
+
+# ROS 2 generated graph files
+frames_*.gv
+frames_*.pdf
