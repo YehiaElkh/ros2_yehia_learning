@@ -1,0 +1,5 @@
+perception_node:
+  ros__parameters:
+    confidence_threshold: 0.70
+    max_distance: 80.0
+    processing_rate: 20
