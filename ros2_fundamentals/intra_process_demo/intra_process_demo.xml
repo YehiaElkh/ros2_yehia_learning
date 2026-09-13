@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<library path="intra_process_demo">
+  <class
+    name="ProducerNode"
+    type="ProducerNode"
+    base_class_type="rclcpp_components::NodeFactory">
+    <description>
+      Producer node for intra-process communication demo.
+    </description>
+  </class>
+
+  <class
+    name="ConsumerNode"
+    type="ConsumerNode"
+    base_class_type="rclcpp_components::NodeFactory">
+    <description>
+      Consumer node for intra-process communication demo.
+    </description>
+  </class>
+</library>
