@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>fault_tolerance_demo</name>
+
+  <version>0.0.1</version>
+
+  <description>
+    ROS2 fault detection, heartbeat and recovery demonstration.
+  </description>
+
+  <maintainer email="yehiaelkh@gmail.com">
+    Yehia Elkh
+  </maintainer>
+
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+
+  <export>
+  </export>
+
+</package>
